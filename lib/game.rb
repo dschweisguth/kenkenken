@@ -33,35 +33,39 @@ class Game
   end
 
   private def eliminate_possibilities
-    might_eliminate_something = true
-    while might_eliminate_something
-      might_eliminate_something = false
-      @boxes.each do |box|
-        might_eliminate_something ||= box.solve
-      end
-      (0...@size).each do |solved_x|
-        (0...@size).each do |solved_y|
-          solution = @cells[solved_y][solved_x].solution
-          if !solution
+    loop do
+      eliminated_something = eliminate_possibilities_with_boxes | eliminate_possibilities_with_cells
+      break if !eliminated_something
+    end
+  end
+
+  private def eliminate_possibilities_with_boxes
+    @boxes.inject(false) { |result, box| result | box.solve }
+  end
+
+  private def eliminate_possibilities_with_cells
+    eliminated_something = false
+    (0...@size).each do |solved_x|
+      (0...@size).each do |solved_y|
+        solution = @cells[solved_y][solved_x].solution
+        if !solution
+          next
+        end
+        (0...@size).each do |unsolved_x|
+          if unsolved_x == solved_x
             next
           end
-          (0...@size).each do |unsolved_x|
-            if unsolved_x == solved_x
-              next
-            end
-            eliminated_something = @cells[solved_y][unsolved_x].possibilities.delete solution
-            might_eliminate_something ||= eliminated_something
+          eliminated_something |= @cells[solved_y][unsolved_x].possibilities.delete(solution)
+        end
+        (0...@size).each do |unsolved_y|
+          if unsolved_y == solved_y
+            next
           end
-          (0...@size).each do |unsolved_y|
-            if unsolved_y == solved_y
-              next
-            end
-            eliminated_something = @cells[unsolved_y][solved_x].possibilities.delete solution
-            might_eliminate_something ||= eliminated_something
-          end
+          eliminated_something |= @cells[unsolved_y][solved_x].possibilities.delete(solution)
         end
       end
     end
+    eliminated_something
   end
 
   def digits
