@@ -34,6 +34,6 @@ class Game
   end
 
   def digits
-    @cells.map { |row| row.map { |cell| cell.possibilities.length == 1 ? cell.possibilities.first : nil } }
+    @cells.map { |row| row.map(&:solution) }
   end
 end
