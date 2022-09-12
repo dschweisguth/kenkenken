@@ -17,4 +17,12 @@ class Cell
   def solution
     possibilities.length == 1 ? possibilities.first : nil
   end
+
+  def solution=(digit)
+    possibilities.replace [digit]
+  end
+
+  def to_s
+    "#{@box} #{possibilities.inspect}"
+  end
 end

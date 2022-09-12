@@ -11,9 +11,17 @@ class Box
   end
 
   def solve
-    keys = @cells.keys
-    if keys.length == 1
-      @cells[keys.first].possibilities.replace [@result]
+    if @op == :+
+      solved_cells, unsolved_cells = @cells.partition { |_, cell| cell.solution }
+      if unsolved_cells.length == 1
+        remainder = @result - solved_cells.map { |_, cell| cell.possibilities.first }.sum
+        unsolved_cells.first[1].solution = remainder
+        true
+      else
+        false
+      end
+    else
+      false
     end
   end
 end

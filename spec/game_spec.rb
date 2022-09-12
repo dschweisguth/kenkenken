@@ -34,9 +34,19 @@ RSpec.describe Game do
       expect_solution boxes, [[1, 2], [2, 1]]
     end
 
-    it "handles an unambiguous addition box" do
+    it "handles an addition box with one cell" do
       boxes = [Box.new(2, :+, 1, [[0, 0]]), Box.new(2, :+, 5, [[1, 0], [0, 1], [1, 1]])]
       expect_solution boxes, [[1, 2], [2, 1]]
+    end
+
+    it "handles an addition box with more than one cell" do
+      boxes = [
+        Box.new(3, :==, 1, [[0, 0]]),
+        Box.new(3, :==, 2, [[1, 0]]),
+        Box.new(3, :+, 5, [[2, 0], [2, 1]]),
+        Box.new(3, :+, 10, [[0, 1], [1, 1], [0, 2], [1, 2], [2, 2]])
+      ]
+      expect_solution boxes, [[1, 2, 3], [3, 1, 2], [2, 3, 1]]
     end
 
     def expect_solution(boxes, digits)

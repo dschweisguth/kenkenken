@@ -35,10 +35,12 @@ class Game
   end
 
   private def eliminate_possibilities
-    @boxes.each { |box| box.solve }
     might_eliminate_something = true
     while might_eliminate_something
       might_eliminate_something = false
+      @boxes.each do |box|
+        might_eliminate_something ||= box.solve
+      end
       (0...@size).each do |solved_x|
         (0...@size).each do |solved_y|
           solution = @cells[solved_y][solved_x].solution
