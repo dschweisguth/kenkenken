@@ -1,5 +1,6 @@
 require_relative '../lib/game'
 require_relative '../lib/box/difference'
+require_relative '../lib/box/product'
 require_relative '../lib/box/solution'
 require_relative '../lib/box/sum'
 
@@ -70,6 +71,21 @@ RSpec.describe Game do
         Box::Sum.new(3, 10, [[0, 1], [1, 1], [0, 2], [1, 2], [2, 2]])
       ]
       expect_solution boxes, [[2, 3, 1], [3, 1, 2], [1, 2, 3]]
+    end
+
+    it "handles a product box with one cell" do
+      boxes = [Box::Product.new(2, 1, [[0, 0]]), Box::Product.new(2, 4, [[1, 0], [0, 1], [1, 1]])]
+      expect_solution boxes, [[1, 2], [2, 1]]
+    end
+
+    it "handles a product box with more than one cell" do
+      boxes = [
+        Box::Solution.new(3, 1, [[0, 0]]),
+        Box::Solution.new(3, 2, [[1, 0]]),
+        Box::Product.new(3, 6, [[2, 0], [2, 1]]),
+        Box::Sum.new(3, 10, [[0, 1], [1, 1], [0, 2], [1, 2], [2, 2]])
+      ]
+      expect_solution boxes, [[1, 2, 3], [3, 1, 2], [2, 3, 1]]
     end
 
     def expect_solution(boxes, digits)
