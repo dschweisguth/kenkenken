@@ -1,5 +1,3 @@
-require_relative 'box'
-
 class Game
   def initialize(boxes)
     @boxes = boxes
