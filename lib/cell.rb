@@ -3,6 +3,9 @@ class Cell
 
   def initialize(box, solution)
     @box = box
+    if solution && solution > box.grid_size
+      raise "solution #{solution} > grid_size #{box.grid_size}"
+    end
     @possibilities =
       if solution
         [solution]
