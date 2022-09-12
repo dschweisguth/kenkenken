@@ -30,7 +30,37 @@ class Game
   end
 
   def solution
+    eliminate_possibilities
     self
+  end
+
+  private def eliminate_possibilities
+    might_eliminate_something = true
+    while might_eliminate_something
+      might_eliminate_something = false
+      (0...@size).each do |solved_x|
+        (0...@size).each do |solved_y|
+          solution = @cells[solved_y][solved_x].solution
+          if !solution
+            next
+          end
+          (0...@size).each do |unsolved_x|
+            if unsolved_x == solved_x
+              next
+            end
+            eliminated_something = @cells[solved_y][unsolved_x].possibilities.delete solution
+            might_eliminate_something ||= eliminated_something
+          end
+          (0...@size).each do |unsolved_y|
+            if unsolved_y == solved_y
+              next
+            end
+            eliminated_something = @cells[unsolved_y][solved_x].possibilities.delete solution
+            might_eliminate_something ||= eliminated_something
+          end
+        end
+      end
+    end
   end
 
   def digits

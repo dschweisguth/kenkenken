@@ -15,15 +15,27 @@ RSpec.describe Game do
 
   describe '#solution' do
     it "solves the simplest game" do
-      expect_solution 1, :==, 1, [[0, 0]], [[1]]
+      boxes = [Box.new(1, :==, 1, [[0, 0]])]
+      expect_solution boxes, [[1]]
     end
 
     it "solves the simplest unsolved game" do
-      expect_solution 1, :+, 1, [[0, 0]], [[1]]
+      boxes = [Box.new(1, :+, 1, [[0, 0]])]
+      expect_solution boxes, [[1]]
     end
 
-    def expect_solution(grid_size, op, result, locations, digits)
-      expect(Game.new([Box.new(grid_size, op, result, locations)]).solution.digits).to eq(digits)
+    it "solves the next simplest unsolved game" do
+      boxes = [Box.new(2, :==, 1, [[0, 0]]), Box.new(2, :+, 5, [[1, 0], [0, 1], [1, 1]])]
+      expect_solution boxes, [[1, 2], [2, 1]]
+    end
+
+    it "solves a game that requires repeated elimination of possibilities" do
+      boxes = [Box.new(2, :==, 1, [[1, 1]]), Box.new(2, :+, 5, [[0, 0], [1, 0], [0, 1]])]
+      expect_solution boxes, [[1, 2], [2, 1]]
+    end
+
+    def expect_solution(boxes, digits)
+      expect(Game.new(boxes).solution.digits).to eq(digits)
     end
   end
 end
