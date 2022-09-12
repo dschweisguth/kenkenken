@@ -49,6 +49,26 @@ RSpec.describe Game do
       expect_solution boxes, [[1, 2, 3], [3, 1, 2], [2, 3, 1]]
     end
 
+    it "handles a subtraction box, solved digit > unsolved digit" do
+      boxes = [
+        Box.new(3, :==, 1, [[0, 0]]),
+        Box.new(3, :==, 2, [[1, 0]]),
+        Box.new(3, :-, 1, [[2, 0], [2, 1]]),
+        Box.new(3, :+, 10, [[0, 1], [1, 1], [0, 2], [1, 2], [2, 2]])
+      ]
+      expect_solution boxes, [[1, 2, 3], [3, 1, 2], [2, 3, 1]]
+    end
+
+    it "handles a subtraction box, unsolved digit > solved digit" do
+      boxes = [
+        Box.new(3, :==, 2, [[0, 0]]),
+        Box.new(3, :==, 3, [[1, 0]]),
+        Box.new(3, :-, 1, [[2, 0], [2, 1]]),
+        Box.new(3, :+, 10, [[0, 1], [1, 1], [0, 2], [1, 2], [2, 2]])
+      ]
+      expect_solution boxes, [[2, 3, 1], [3, 1, 2], [1, 2, 3]]
+    end
+
     def expect_solution(boxes, digits)
       expect(Game.new(boxes).solution.digits).to eq(digits)
     end
