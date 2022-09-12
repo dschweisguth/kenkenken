@@ -109,6 +109,21 @@ RSpec.describe Game do
       expect_solution boxes, [[2, 3, 1], [1, 2, 3], [3, 1, 2]]
     end
 
+    # 5 3 3   3 1 2
+    # 5 4 4 → 2 3 1
+    # 1 2 3   1 2 3
+    it "guesses" do
+      boxes = [
+        Box::Solution.new(3, 1, [[0, 0]]),
+        Box::Solution.new(3, 2, [[1, 0]]),
+        Box::Solution.new(3, 3, [[2, 0]]),
+        Box::Sum.new(3, 5, [[0, 1], [0, 2]]),
+        Box::Sum.new(3, 4, [[1, 1], [2, 1]]),
+        Box::Sum.new(3, 4, [[1, 2], [2, 2]])
+      ]
+      expect_solution boxes, [[1, 2, 3], [2, 3, 1], [3, 1, 2]]
+    end
+
     def expect_solution(boxes, digits)
       expect(Game.new(boxes).solution.digits).to eq(digits)
     end

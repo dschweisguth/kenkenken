@@ -3,10 +3,11 @@ class Game
     @boxes = boxes
     initialize_cells
     @size = @cells.length
+    @all_digits = (1..@size).to_a
     assert_grid_is_square
   end
 
-  private def initialize_cells
+  protected def initialize_cells
     @cells = []
     @boxes.each do |box|
       box.cells.each do |(x, y), cell|
@@ -29,7 +30,22 @@ class Game
 
   def solution
     eliminate_possibilities
-    self
+    if solved?
+      return self
+    end
+    (0...@size).each do |y|
+      (0...@size).each do |x|
+        possibilities = @cells[y][x].possibilities
+        if possibilities.length > 1
+          possibilities.each do |possibility|
+            solution = guess(x, y, possibility).solution
+            if solution
+              return solution
+            end
+          end
+        end
+      end
+    end
   end
 
   private def eliminate_possibilities
@@ -66,6 +82,20 @@ class Game
       end
     end
     eliminated_something
+  end
+
+  private def solved?
+    @cells.all? { |row| row.map { |cell| cell.solution || 0 }.sort == @all_digits } &&
+      (0...@size).all? { |x| @cells.map { |row| row[x].solution }.sort == @all_digits }
+  end
+
+  private def guess(x, y, digit)
+    dup.tap do |copy|
+      boxes = @boxes.map &:copy
+      copy.instance_variable_set '@boxes', boxes
+      copy.initialize_cells
+      copy.instance_variable_get('@cells')[y][x].solution = digit
+    end
   end
 
   def digits
