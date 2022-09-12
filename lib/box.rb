@@ -9,4 +9,11 @@ class Box
     @result = result
     @cells = locations.map { |location| [location, Cell.new(self, op == :== ? result : nil)] }.to_h
   end
+
+  def solve
+    keys = @cells.keys
+    if keys.length == 1
+      @cells[keys.first].possibilities.replace [@result]
+    end
+  end
 end

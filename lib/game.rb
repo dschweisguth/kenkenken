@@ -35,6 +35,7 @@ class Game
   end
 
   private def eliminate_possibilities
+    @boxes.each { |box| box.solve }
     might_eliminate_something = true
     while might_eliminate_something
       might_eliminate_something = false

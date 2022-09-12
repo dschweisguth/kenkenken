@@ -34,6 +34,11 @@ RSpec.describe Game do
       expect_solution boxes, [[1, 2], [2, 1]]
     end
 
+    it "handles an unambiguous addition box" do
+      boxes = [Box.new(2, :+, 1, [[0, 0]]), Box.new(2, :+, 5, [[1, 0], [0, 1], [1, 1]])]
+      expect_solution boxes, [[1, 2], [2, 1]]
+    end
+
     def expect_solution(boxes, digits)
       expect(Game.new(boxes).solution.digits).to eq(digits)
     end
