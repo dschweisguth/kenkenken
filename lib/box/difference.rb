@@ -2,15 +2,23 @@ require_relative 'base'
 
 class Box::Difference < Box::Base
   def solve
-    solved_cells, unsolved_cells = @cells.partition { |_, cell| cell.solution }
-    if unsolved_cells.length != 1
+    solved, unsolved = @cells.values
+    if !solved.solution || unsolved.solution
+      solved, unsolved = unsolved, solved
+    end
+    if !solved.solution || unsolved.solution
       return false
     end
-    solved_digit = solved_cells.first[1].solution
-    unsolved_possibilities =
-      [solved_digit + @result, solved_digit - @result].
-        reject { |digit| digit < 1 || @grid_size < digit }
-    unsolved_cells.first[1].possibilities.replace unsolved_possibilities
+    solved_digit = solved.solution
+    unsolved.possibilities.clear
+    sum = solved_digit + @result
+    if sum <= @grid_size
+      unsolved.possibilities << sum
+    end
+    difference = solved_digit - @result
+    if difference >= 1
+      unsolved.possibilities << difference
+    end
     true
   end
 end
