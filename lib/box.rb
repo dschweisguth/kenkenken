@@ -7,21 +7,27 @@ class Box
     @grid_size = grid_size
     @op = op
     @result = result
-    @cells = locations.map { |location| [location, Cell.new(self, op == :== ? result : nil)] }.to_h
+    @cells = locations.map { |location| [location, Cell.new(self)] }.to_h
   end
 
   def solve
-    if @op == :+
-      solved_cells, unsolved_cells = @cells.partition { |_, cell| cell.solution }
-      if unsolved_cells.length == 1
-        remainder = @result - solved_cells.map { |_, cell| cell.possibilities.first }.sum
-        unsolved_cells.first[1].solution = remainder
-        true
-      else
-        false
-      end
-    else
-      false
+    case @op
+      when :==
+        if @cells.first[1].solution
+          false
+        else
+          @cells.first[1].solution = @result
+          true
+        end
+      when :+
+        solved_cells, unsolved_cells = @cells.partition { |_, cell| cell.solution }
+        if unsolved_cells.length == 1
+          remainder = @result - solved_cells.map { |_, cell| cell.possibilities.first }.sum
+          unsolved_cells.first[1].solution = remainder
+          true
+        else
+          false
+        end
     end
   end
 end
