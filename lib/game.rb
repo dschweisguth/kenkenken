@@ -5,6 +5,7 @@ class Game
     @size = @cells.length
     @all_digits = (1..@size).to_a
     assert_grid_is_square
+    assert_box_grid_sizes_match_grid
   end
 
   protected def initialize_cells
@@ -24,6 +25,14 @@ class Game
     @cells.each_with_index do |row, y|
       if row.length != @size
         raise "Grid is #{@size} cells high but row #{y} is #{row.length} cells wide"
+      end
+    end
+  end
+
+  private def assert_box_grid_sizes_match_grid
+    @boxes.each do |box|
+      if box.grid_size != @size
+        raise "Grid size is #{@size}, but #{box} has grid size #{box.grid_size}"
       end
     end
   end

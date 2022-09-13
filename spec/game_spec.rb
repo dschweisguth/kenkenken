@@ -7,14 +7,22 @@ require_relative '../lib/box/sum'
 
 RSpec.describe Game do
   describe '.new' do
-    it "raises if the given boxes don't form a square" do
-      box = Box::Sum.new 2, 3, [[0, 0], [1, 0]]
-      expect { Game.new [box] }.to raise_error "Grid is 1 cells high but row 0 is 2 cells wide"
+    it "raises if a cell is in more than one box" do
+      boxes = [
+        Box::Solution.new(1, 1, [[0, 0]]),
+        Box::Solution.new(1, 1, [[0, 0]])
+      ]
+      expect { Game.new boxes }.to raise_error "Cell 0, 0 is in more than one box"
     end
 
-    it "raises if a cell is in more than one box" do
-      boxes = [Box::Solution.new(1, 1, [[0, 0]]), Box::Solution.new(1, 1, [[0, 0]])]
-      expect { Game.new boxes }.to raise_error "Cell 0, 0 is in more than one box"
+    it "raises if the given boxes don't form a square" do
+      boxes = [Box::Sum.new(2, 3, [[0, 0], [1, 0]])]
+      expect { Game.new boxes }.to raise_error "Grid is 1 cells high but row 0 is 2 cells wide"
+    end
+
+    it "raises if a box's grid size differs from the grid" do
+      boxes = [Box::Sum.new(3, 6, [[0, 0], [1, 0], [0, 1], [1, 1]])]
+      expect { Game.new boxes }.to raise_error "Grid size is 2, but #{boxes.first} has grid size 3"
     end
   end
 
@@ -30,17 +38,26 @@ RSpec.describe Game do
     end
 
     it "solves the next simplest unsolved game" do
-      boxes = [Box::Solution.new(2, 1, [[0, 0]]), Box::Sum.new(2, 5, [[1, 0], [0, 1], [1, 1]])]
+      boxes = [
+        Box::Solution.new(2, 1, [[0, 0]]),
+        Box::Sum.new(2, 5, [[1, 0], [0, 1], [1, 1]])
+      ]
       expect_solution boxes, [[1, 2], [2, 1]]
     end
 
     it "solves a game that requires repeated elimination of possibilities" do
-      boxes = [Box::Solution.new(2, 1, [[1, 1]]), Box::Sum.new(2, 5, [[0, 0], [1, 0], [0, 1]])]
+      boxes = [
+        Box::Solution.new(2, 1, [[1, 1]]),
+        Box::Sum.new(2, 5, [[0, 0], [1, 0], [0, 1]])
+      ]
       expect_solution boxes, [[1, 2], [2, 1]]
     end
 
     it "handles a sum box with one cell" do
-      boxes = [Box::Sum.new(2, 1, [[0, 0]]), Box::Sum.new(2, 5, [[1, 0], [0, 1], [1, 1]])]
+      boxes = [
+        Box::Sum.new(2, 1, [[0, 0]]),
+        Box::Sum.new(2, 5, [[1, 0], [0, 1], [1, 1]])
+      ]
       expect_solution boxes, [[1, 2], [2, 1]]
     end
 
@@ -75,7 +92,10 @@ RSpec.describe Game do
     end
 
     it "handles a product box with one cell" do
-      boxes = [Box::Product.new(2, 1, [[0, 0]]), Box::Product.new(2, 4, [[1, 0], [0, 1], [1, 1]])]
+      boxes = [
+        Box::Product.new(2, 1, [[0, 0]]),
+        Box::Product.new(2, 4, [[1, 0], [0, 1], [1, 1]])
+      ]
       expect_solution boxes, [[1, 2], [2, 1]]
     end
 
