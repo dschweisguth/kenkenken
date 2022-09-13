@@ -80,13 +80,13 @@ class Game
           if unsolved_x == solved_x
             next
           end
-          eliminated_something |= @cells[solved_y][unsolved_x].possibilities.delete(solution)
+          eliminated_something |= @cells[solved_y][unsolved_x].eliminate(solution)
         end
         (0...@size).each do |unsolved_y|
           if unsolved_y == solved_y
             next
           end
-          eliminated_something |= @cells[unsolved_y][solved_x].possibilities.delete(solution)
+          eliminated_something |= @cells[unsolved_y][solved_x].eliminate(solution)
         end
       end
     end

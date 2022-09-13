@@ -16,7 +16,7 @@ class Box::Base
     dup.tap do |copy|
       cells = @cells.map do |location, old_cell|
         new_cell = Cell.new copy
-        new_cell.possibilities.replace old_cell.possibilities
+        new_cell.instance_variable_set '@possibilities', old_cell.possibilities.dup
         [location, new_cell]
       end.to_h
       copy.instance_variable_set '@cells', cells

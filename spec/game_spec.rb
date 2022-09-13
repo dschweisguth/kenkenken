@@ -144,6 +144,16 @@ RSpec.describe Game do
       expect_solution boxes, [[1, 2, 3], [2, 3, 1], [3, 1, 2]]
     end
 
+    it "raises if a cell's last possibility is eliminated" do
+      boxes = [
+        Box::Solution.new(2, 1, [[0, 0]]),
+        Box::Solution.new(2, 1, [[1, 0]]),
+        Box::Solution.new(2, 1, [[0, 1]]),
+        Box::Solution.new(2, 1, [[1, 1]])
+      ]
+      expect { Game.new(boxes).solution }.to raise_error "No possible solutions remain"
+    end
+
     def expect_solution(boxes, digits)
       expect(Game.new(boxes).solution.digits).to eq(digits)
     end

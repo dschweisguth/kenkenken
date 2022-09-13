@@ -9,16 +9,17 @@ class Box::Dividend < Box::Base
     if !solved.solution || unsolved.solution
       return false
     end
+    possibilities = []
     solved_digit = solved.solution
-    unsolved.possibilities.clear
     product = solved_digit * @result
     if product <= @grid_size
-      unsolved.possibilities << product
+      possibilities << product
     end
     div, mod = solved_digit.divmod @result
     if div >= 1 && mod == 0
-      unsolved.possibilities << div
+      possibilities << div
     end
+    unsolved.possibilities = possibilities
     true
   end
 end
