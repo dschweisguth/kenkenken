@@ -10,8 +10,14 @@ class Cell
     possibilities.length == 1 ? possibilities.first : nil
   end
 
-  def solution=(digit)
-    possibilities.replace [digit]
+  def restrict_to(digits)
+    intersection = possibilities & digits
+    if intersection.any? && possibilities != intersection
+      possibilities.replace intersection
+      true
+    else
+      false
+    end
   end
 
   def eliminate(digit)
@@ -20,10 +26,6 @@ class Cell
         raise "No possible solutions remain"
       end
     end
-  end
-
-  def possibilities=(possibilities)
-    @possibilities.replace possibilities
   end
 
   def to_s

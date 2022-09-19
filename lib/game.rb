@@ -103,7 +103,7 @@ class Game
       boxes = @boxes.map &:copy
       copy.instance_variable_set '@boxes', boxes
       copy.initialize_cells
-      copy.instance_variable_get('@cells')[y][x].solution = digit
+      copy.instance_variable_get('@cells')[y][x].restrict_to [digit]
     end
   end
 

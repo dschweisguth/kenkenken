@@ -7,7 +7,6 @@ class Box::Sum < Box::Base
       return false
     end
     remainder = @result - solved_cells.map { |cell| cell.solution }.sum
-    unsolved_cells.first.solution = remainder
-    true
+    unsolved_cells.first.restrict_to [remainder]
   end
 end

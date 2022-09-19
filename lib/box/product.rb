@@ -7,7 +7,6 @@ class Box::Product < Box::Base
       return false
     end
     dividend = @result / solved_cells.map { |cell| cell.solution }.inject(1, :*)
-    unsolved_cells.first.solution = dividend
-    true
+    unsolved_cells.first.restrict_to [dividend]
   end
 end

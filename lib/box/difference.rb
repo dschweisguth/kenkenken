@@ -9,17 +9,7 @@ class Box::Difference < Box::Base
     if !solved.solution || unsolved.solution
       return false
     end
-    possibilities = []
     solved_digit = solved.solution
-    sum = solved_digit + @result
-    if sum <= @grid_size
-      possibilities << sum
-    end
-    difference = solved_digit - @result
-    if difference >= 1
-      possibilities << difference
-    end
-    unsolved.possibilities = possibilities
-    true
+    unsolved.restrict_to [solved_digit + @result, solved_digit - @result]
   end
 end
