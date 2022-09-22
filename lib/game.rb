@@ -110,4 +110,13 @@ class Game
   def digits
     @cells.map { |row| row.map(&:solution) }
   end
+
+  def to_s
+    @cells.
+      reverse.
+      map do |row|
+        "#{row.map { |cell| cell.possibilities.inspect }.join ' '}\n"
+      end.
+      join
+  end
 end

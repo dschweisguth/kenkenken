@@ -158,4 +158,11 @@ RSpec.describe Game do
       expect(Game.new(boxes).solution.digits).to eq(digits)
     end
   end
+
+  describe '#to_s' do
+    it "includes each cell's possibilities" do
+      boxes = [Box::Sum.new(2, 6, [[0, 0], [1, 0], [0, 1], [1, 1]])]
+      expect(Game.new(boxes).to_s).to eq("[1, 2] [1, 2]\n[1, 2] [1, 2]\n")
+    end
+  end
 end
