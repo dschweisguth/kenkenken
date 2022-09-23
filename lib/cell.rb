@@ -24,6 +24,10 @@ class Cell
     possibilities.length > 1 && possibilities.delete(digit)
   end
 
+  def unsolved_possibilities
+    possibilities.length == 1 ? [] : possibilities
+  end
+
   def to_s
     "#{@box} #{possibilities.inspect}"
   end

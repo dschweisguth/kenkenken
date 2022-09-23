@@ -2,8 +2,6 @@ class Game
   def initialize(boxes)
     @boxes = boxes
     initialize_cells
-    @size = @cells.length
-    @all_digits = (1..@size).to_a
     assert_grid_is_square
     assert_box_grid_sizes_match_grid
   end
@@ -23,16 +21,16 @@ class Game
 
   private def assert_grid_is_square
     @cells.each_with_index do |row, y|
-      if row.length != @size
-        raise "Grid is #{@size} cells high but row #{y} is #{row.length} cells wide"
+      if row.length != size
+        raise "Grid is #{size} cells high but row #{y} is #{row.length} cells wide"
       end
     end
   end
 
   private def assert_box_grid_sizes_match_grid
     @boxes.each do |box|
-      if box.grid_size != @size
-        raise "Grid size is #{@size}, but #{box} has grid size #{box.grid_size}"
+      if box.grid_size != size
+        raise "Grid size is #{size}, but #{box} has grid size #{box.grid_size}"
       end
     end
   end
@@ -42,20 +40,7 @@ class Game
     if solved?
       return self
     end
-    (0...@size).each do |y|
-      (0...@size).each do |x|
-        possibilities = @cells[y][x].possibilities
-        if possibilities.length > 1
-          possibilities.each do |possibility|
-            solution = guess(x, y, possibility).solution
-            if solution
-              return solution
-            end
-          end
-        end
-      end
-    end
-    nil
+    guessed_solution
   end
 
   private def eliminate_possibilities
@@ -71,19 +56,19 @@ class Game
 
   private def eliminate_possibilities_with_cells
     eliminated_something = false
-    (0...@size).each do |solved_x|
-      (0...@size).each do |solved_y|
+    (0...size).each do |solved_x|
+      (0...size).each do |solved_y|
         solution = @cells[solved_y][solved_x].solution
         if !solution
           next
         end
-        (0...@size).each do |unsolved_x|
+        (0...size).each do |unsolved_x|
           if unsolved_x == solved_x
             next
           end
           eliminated_something |= @cells[solved_y][unsolved_x].eliminate(solution)
         end
-        (0...@size).each do |unsolved_y|
+        (0...size).each do |unsolved_y|
           if unsolved_y == solved_y
             next
           end
@@ -95,8 +80,25 @@ class Game
   end
 
   private def solved?
-    @cells.all? { |row| row.map { |cell| cell.solution || 0 }.sort == @all_digits } &&
-      (0...@size).all? { |x| @cells.map { |row| row[x].solution }.sort == @all_digits }
+    [@cells, @cells.transpose].all? do |rows|
+      rows.all? { |row| row.map { |cell| cell.solution || 0 }.sort == all_digits }
+    end
+  end
+
+  private def all_digits
+    @all_digits ||= (1..size).to_a
+  end
+
+  private def guessed_solution
+    all_locations.
+      lazy.
+      flat_map { |x, y| @cells[y][x].unsolved_possibilities.map { |possibility| [x, y, possibility] } }.
+      map { |x, y, possibility| guess(x, y, possibility).solution }.
+      find &:itself
+  end
+
+  private def all_locations
+    @all_locations ||= (0...size).to_a.product((0...size).to_a).map { |x, y| [y, x] }
   end
 
   private def guess(x, y, digit)
@@ -110,6 +112,10 @@ class Game
 
   def digits
     @cells.map { |row| row.map(&:solution) }
+  end
+
+  private def size
+    @size ||= @cells.length
   end
 
   def to_s
