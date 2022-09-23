@@ -1,6 +1,13 @@
 require_relative 'base'
 
 class Box::Dividend < Box::Base
+  def initialize(grid_size, result, locations)
+    if locations.length != 2
+      raise "locations must contain 2 locations, but contains #{locations.length}"
+    end
+    super
+  end
+
   def solve
     solved, unsolved = @cells.values
     if !solved.solution || unsolved.solution

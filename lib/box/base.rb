@@ -9,7 +9,13 @@ class Box::Base
   def initialize(grid_size, result, locations)
     @grid_size = grid_size
     @result = result
-    @cells = locations.map { |location| [location, Cell.new(self)] }.to_h
+    @cells = {}
+    locations.each do |location|
+      if @cells[location]
+        raise "Two cells are at the same location, #{location.inspect}"
+      end
+      @cells[location] = Cell.new(self)
+    end
   end
 
   def copy
