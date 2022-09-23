@@ -35,8 +35,7 @@ RSpec.describe Cell do
 
   describe '#to_s' do
     it "includes the cell's possibilities" do
-      box = Box::Sum.new 1, 1, [[0, 0]]
-      expect(Cell.new(box).to_s).to eq("#{box} [1]")
+      expect(Cell.new(1).to_s).to eq("[1]")
     end
   end
 end

@@ -1,9 +1,8 @@
 class Cell
   attr_reader :possibilities
 
-  def initialize(box)
-    @box = box
-    @possibilities = (1..box.grid_size).to_a
+  def initialize(grid_size)
+    @possibilities = (1..grid_size).to_a
   end
 
   def solution
@@ -28,7 +27,13 @@ class Cell
     possibilities.length == 1 ? [] : possibilities
   end
 
+  def copy
+    dup.tap do |copy|
+      copy.instance_variable_set '@possibilities', possibilities.dup
+    end
+  end
+
   def to_s
-    "#{@box} #{possibilities.inspect}"
+    possibilities.inspect
   end
 end
