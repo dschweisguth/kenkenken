@@ -21,11 +21,7 @@ class Cell
   end
 
   def eliminate(digit)
-    possibilities.delete(digit).tap do
-      if possibilities.empty?
-        raise "No possible solutions remain"
-      end
-    end
+    possibilities.length > 1 && possibilities.delete(digit)
   end
 
   def to_s

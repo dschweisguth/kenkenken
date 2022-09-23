@@ -55,6 +55,7 @@ class Game
         end
       end
     end
+    nil
   end
 
   private def eliminate_possibilities
