@@ -24,4 +24,17 @@ class Box::Dividend < Box::Base
     end
     unsolved.restrict_to possibilities
   end
+
+  def satisfies_constraint?(combo)
+    dividend_equals_result(combo[0], combo[1]) || dividend_equals_result(combo[1], combo[0])
+  end
+
+  private def dividend_equals_result(a, b)
+    div, mod = a.divmod b
+    div == @result && mod == 0
+  end
+
+  def operator
+    '÷'
+  end
 end

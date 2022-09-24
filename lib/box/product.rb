@@ -16,4 +16,12 @@ class Box::Product < Box::Base
     dividend = @result / solved_cells.map { |cell| cell.solution }.inject(1, :*)
     unsolved_cells.first.restrict_to [dividend]
   end
+
+  def satisfies_constraint?(combo)
+    combo.inject(:*) == @result
+  end
+
+  def operator
+    '×'
+  end
 end

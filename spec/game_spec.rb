@@ -63,9 +63,20 @@ RSpec.describe Game do
         Box::Solution.new(3, 3, [[2, 0]]),
         Box::Sum.new(3, 5, [[0, 1], [0, 2]]),
         Box::Sum.new(3, 4, [[1, 1], [2, 1]]),
-        Box::Sum.new(3, 4, [[1, 2], [2, 2]])
+        Box::Sum.new(3, 3, [[1, 2], [2, 2]])
       ]
       expect_solution boxes, [[1, 2, 3], [2, 3, 1], [3, 1, 2]]
+    end
+
+    # - - -   3 2 1
+    # 4 - - → 1 3 2
+    # 4 4 -   2 1 3
+    it "rejects a guess with an unsolvable box, size 3" do
+      boxes = [
+        Box::Sum.new(3,  4, [[0, 0], [1, 0], [0, 1]]),
+        Box::Sum.new(3, 14, [[2, 0], [1, 1], [2, 1], [0, 2], [1, 2], [2, 2]])
+      ]
+      expect_solution boxes, [[2, 1, 3], [1, 3, 2], [3, 2, 1]]
     end
 
     it "returns nil if there is no solution" do

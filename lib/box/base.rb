@@ -4,7 +4,7 @@ module Box
 end
 
 class Box::Base
-  attr_reader :cells, :grid_size
+  attr_reader :grid_size, :result, :cells
 
   def initialize(grid_size, result, locations)
     @grid_size = grid_size
@@ -32,5 +32,21 @@ class Box::Base
     dup.tap do |copy|
       copy.instance_variable_set '@cells', cells.transform_values(&:copy)
     end
+  end
+
+  def solvable?
+    possibilities = cells.values.map(&:possibilities)
+    combos =
+      if possibilities.length == 1
+        possibilities.first.map { |digit| [digit] }
+      else
+        first, *rest = possibilities
+        first.product *rest
+      end
+    combos.any? { |combo| satisfies_constraint? combo }
+  end
+
+  def to_s
+    "#{operator}#{result} { #{cells.map { |location, cell| "#{location} => #{cell}" }.join ", "} }"
   end
 end

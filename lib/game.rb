@@ -1,5 +1,8 @@
+require 'logger'
+
 class Game
   def initialize(boxes)
+    @logger = Logger.new(STDOUT).tap { |logger| logger.level = Logger::INFO }
     @boxes = boxes
     initialize_cells
     assert_grid_is_square
@@ -37,6 +40,12 @@ class Game
 
   def solution
     eliminate_possibilities
+    @logger.debug { "\n#{self.to_s.chomp}" }
+    unsolvable_box = @boxes.find { |box| !box.solvable? }
+    if unsolvable_box
+      @logger.debug "Box #{unsolvable_box} is unsolvable"
+      return nil
+    end
     if solved?
       return self
     end

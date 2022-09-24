@@ -19,4 +19,12 @@ class Box::Difference < Box::Base
     solved_digit = solved.solution
     unsolved.restrict_to [solved_digit + @result, solved_digit - @result]
   end
+
+  def satisfies_constraint?(combo)
+    (combo[0] - combo[1]).abs == @result
+  end
+
+  def operator
+    '-'
+  end
 end

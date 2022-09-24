@@ -16,4 +16,12 @@ class Box::Sum < Box::Base
     remainder = @result - solved_cells.map { |cell| cell.solution }.sum
     unsolved_cells.first.restrict_to [remainder]
   end
+
+  def satisfies_constraint?(combo)
+    combo.sum == @result
+  end
+
+  def operator
+    '+'
+  end
 end

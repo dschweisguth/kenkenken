@@ -11,4 +11,12 @@ class Box::Solution < Box::Base
   def solve
     @cells.first[1].restrict_to [@result]
   end
+
+  def satisfies_constraint?(combo)
+    combo[0] == @result
+  end
+
+  def operator
+    '='
+  end
 end
