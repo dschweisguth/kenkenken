@@ -29,12 +29,23 @@ class Box::Base
 
   def solve
     combos = self.combos
-    solvable_combos = combos.select { |combo| satisfies_constraint? combo }
+    solvable_combos =
+      combos.
+        select { |combo| satisfies_constraint? combo }.
+        reject { |combo| has_duplicate_in_row_or_column? combo }
     if solvable_combos.length == combos.length
       return false
     end
     solvable_combos.transpose.each_with_index.inject(false) do |progressed, (possibilities, i)|
       progressed | cells.values[i].restrict_to(possibilities.uniq)
+    end
+  end
+
+  private def has_duplicate_in_row_or_column?(combo)
+    (0..1).any? do |coordinate|
+      possibilities_and_positions =
+        combo.each_with_index.map { |digit, i| [digit, cells.keys[i][coordinate]] }
+      possibilities_and_positions.uniq.length < possibilities_and_positions.length
     end
   end
 

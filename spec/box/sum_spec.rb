@@ -23,6 +23,20 @@ RSpec.describe Box::Sum do
       expect(box.cells[[1, 0]].solution).to eq(2)
     end
 
+    it "eliminates duplicates in rows" do
+      box = box 3, 4, [[0, 0], [0, 1]]
+      eliminated_something = box.solve
+      expect(eliminated_something).to be_truthy
+      expect(box.cells.values.map &:possibilities).to eq([[1, 3], [1, 3]])
+    end
+
+    it "eliminates duplicates in columns" do
+      box = box 3, 4, [[0, 0], [1, 0]]
+      eliminated_something = box.solve
+      expect(eliminated_something).to be_truthy
+      expect(box.cells.values.map &:possibilities).to eq([[1, 3], [1, 3]])
+    end
+
     it "returns false if no possibilities were eliminated" do
       box = box 1, 1, [[0, 0]]
       eliminated_something = box.solve
