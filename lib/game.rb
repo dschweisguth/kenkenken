@@ -6,7 +6,7 @@ class Game
     @boxes = boxes
     initialize_cells
     assert_grid_is_square
-    assert_box_grid_sizes_match_grid
+    assert_possibilities_match_grid
   end
 
   protected def initialize_cells
@@ -30,10 +30,11 @@ class Game
     end
   end
 
-  private def assert_box_grid_sizes_match_grid
+  private def assert_possibilities_match_grid
     @boxes.each do |box|
-      if box.grid_size != size
-        raise "Grid size is #{size}, but #{box} has grid size #{box.grid_size}"
+      cell = box.cells.values.find { |cell| cell.possibilities.length != size }
+      if cell
+        raise "Grid size is #{size}, but a cell has #{cell.possibilities.length} possibilities"
       end
     end
   end

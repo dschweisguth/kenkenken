@@ -4,15 +4,14 @@ module Box
 end
 
 class Box::Base
-  attr_reader :grid_size, :result, :cells
+  attr_reader :result, :cells
 
   def initialize(grid_size, result, locations)
-    @grid_size = grid_size
     @result = result
-    initialize_cells(locations)
+    initialize_cells(grid_size, locations)
   end
 
-  private def initialize_cells(locations)
+  private def initialize_cells(grid_size, locations)
     @cells = {}
     locations.each do |location|
       if location[0] < 0 || grid_size <= location[0]
@@ -28,6 +27,17 @@ class Box::Base
     end
   end
 
+  def solve
+    combos = self.combos
+    solvable_combos = combos.select { |combo| satisfies_constraint? combo }
+    if solvable_combos.length == combos.length
+      return false
+    end
+    solvable_combos.transpose.each_with_index.inject(false) do |progressed, (possibilities, i)|
+      progressed | cells.values[i].restrict_to(possibilities.uniq)
+    end
+  end
+
   def copy
     dup.tap do |copy|
       copy.instance_variable_set '@cells', cells.transform_values(&:copy)
@@ -35,15 +45,20 @@ class Box::Base
   end
 
   def solvable?
-    possibilities = cells.values.map(&:possibilities)
-    combos =
-      if possibilities.length == 1
-        possibilities.first.map { |digit| [digit] }
-      else
-        first, *rest = possibilities
-        first.product *rest
-      end
     combos.any? { |combo| satisfies_constraint? combo }
+  end
+
+  private def combos
+    product cells.values.map(&:possibilities)
+  end
+
+  private def product(arrays)
+    if arrays.length == 1
+      arrays.first.map { |digit| [digit] }
+    else
+      first, *rest = arrays
+      first.product *rest
+    end
   end
 
   def to_s

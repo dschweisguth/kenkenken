@@ -22,7 +22,7 @@ RSpec.describe Game do
 
     it "raises if a box's grid size differs from the grid" do
       boxes = [Box::Sum.new(3, 6, [[0, 0], [1, 0], [0, 1], [1, 1]])]
-      expect { Game.new boxes }.to raise_error "Grid size is 2, but #{boxes.first} has grid size 3"
+      expect { Game.new boxes }.to raise_error "Grid size is 2, but a cell has 3 possibilities"
     end
   end
 
@@ -77,6 +77,48 @@ RSpec.describe Game do
         Box::Sum.new(3, 14, [[2, 0], [1, 1], [2, 1], [0, 2], [1, 2], [2, 2]])
       ]
       expect_solution boxes, [[2, 1, 3], [1, 3, 2], [3, 2, 1]]
+    end
+
+    #  3  3 10 10   1 2 3 4
+    # 13  3  3 10 → 4 1 2 3
+    # 13 13  4  4 → 3 4 1 2
+    # 13  7  7  4   2 3 4 1
+    it "rejects a guess with an unsolvable box, size 4" do
+      boxes = [
+        Box::Sum.new(4, 13, [[0, 0], [0, 1], [1, 1], [0, 2]]),
+        Box::Sum.new(4,  7, [[1, 0], [2, 0]]),
+        Box::Sum.new(4,  4, [[3, 0], [2, 1], [3, 1]]),
+        Box::Sum.new(4,  3, [[1, 2], [2, 2]]),
+        Box::Sum.new(4, 10, [[3, 2], [2, 3], [3, 3]]),
+        Box::Sum.new(4,  3, [[0, 3], [1, 3]])
+      ]
+      expect_solution boxes, [[2, 3, 4, 1], [3, 4, 1, 2], [4, 1, 2, 3], [1, 2, 3, 4]]
+    end
+
+    it "solves the small puzzle" do
+      boxes = [
+        Box::Sum.new(5, 7, [[0, 0], [0, 1], [1, 1]]),
+        Box::Dividend.new(5, 2, [[1, 0], [2, 0]]),
+        Box::Difference.new(5, 2, [[3, 0], [4, 0]]),
+        Box::Solution.new(5, 3, [[2, 1]]),
+        Box::Product.new(5, 80, [[3, 1], [4, 1], [3, 2]]),
+        Box::Difference.new(5, 2, [[0, 2], [0, 3]]),
+        Box::Difference.new(5, 2, [[1, 2], [2, 2]]),
+        Box::Solution.new(5, 2, [[4, 2]]),
+        Box::Sum.new(5, 9, [[1, 3], [2, 3]]),
+        Box::Solution.new(5, 2, [[3, 3]]),
+        Box::Difference.new(5, 2, [[4, 3], [4, 4]]),
+        Box::Difference.new(5, 1, [[0, 4], [1, 4]]),
+        Box::Dividend.new(5, 2, [[2, 4], [3, 4]])
+      ]
+      expected_solution = [
+        [5, 4, 2, 1, 3],
+        [3, 5, 4, 2, 1],
+        [1, 3, 5, 4, 2],
+        [2, 1, 3, 5, 4],
+        [4, 2, 1, 3, 5]
+      ].reverse
+      expect_solution boxes, expected_solution
     end
 
     it "returns nil if there is no solution" do
