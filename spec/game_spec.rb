@@ -128,6 +128,41 @@ RSpec.describe Game do
       expect_solution boxes, expected_solution
     end
 
+    # Solving this game quickly requires guessing box combos rather than cells
+    it "solves the large puzzle" do
+      boxes = [
+        Box::Sum.new(7, 14, [[0, 0], [1, 0], [2, 0], [3, 0]]),
+        Box::Solution.new(7, 7, [[4, 0]]),
+        Box::Product.new(7, 12, [[5, 0], [6, 0]]),
+        Box::Sum.new(7, 11, [[0, 1], [1, 1], [2, 1]]),
+        Box::Solution.new(7, 5, [[3, 1]]),
+        Box::Product.new(7, 48, [[4, 1], [5, 1], [6, 1]]),
+        Box::Difference.new(7, 2, [[0, 2], [0, 3]]),
+        Box::Sum.new(7, 11, [[1, 2], [1, 3], [1, 4]]),
+        Box::Sum.new(7, 7, [[2, 2], [3, 2]]),
+        Box::Sum.new(7, 12, [[4, 2], [4, 3], [5, 3]]),
+        Box::Product.new(7, 14, [[5, 2], [6, 2]]),
+        Box::Dividend.new(7, 2, [[2, 3], [3, 3]]),
+        Box::Product.new(7, 3, [[6, 3], [5, 4], [6, 4]]),
+        Box::Sum.new(7, 12, [[0, 4], [0, 5], [1, 5], [0, 6]]),
+        Box::Sum.new(7, 18, [[2, 4], [3, 4], [4, 4]]),
+        Box::Product.new(7, 42, [[2, 5], [3, 5], [4, 5]]),
+        Box::Solution.new(7, 4, [[5, 5]]),
+        Box::Difference.new(7, 2, [[6, 5], [6, 6]]),
+        Box::Difference.new(7, 1, [[1, 6], [2, 6]]),
+        Box::Product.new(7, 60, [[3, 6], [4, 6], [5, 6]])
+      ]
+      expect_solution boxes, [
+        [2, 5, 6, 1, 7, 3, 4],
+        [3, 7, 1, 5, 4, 2, 6],
+        [5, 6, 4, 3, 1, 7, 2],
+        [7, 3, 2, 4, 5, 6, 1],
+        [4, 2, 5, 7, 6, 1, 3],
+        [6, 1, 7, 2, 3, 4, 5],
+        [1, 4, 3, 6, 2, 5, 7]
+      ]
+    end
+
     # This is here because it catches errors in constructing puzzles,
     # but is also used in guessing
     it "returns nil if there is no solution because a box is unsolvable" do

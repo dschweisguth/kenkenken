@@ -1,6 +1,9 @@
 require 'logger'
+require_relative 'array'
 
 class Game
+  protected attr_reader :boxes
+
   def initialize(boxes)
     @logger = Logger.new(STDOUT).tap { |logger| logger.level = Logger::INFO }
     @boxes = boxes
@@ -47,6 +50,13 @@ class Game
       @logger.debug "Box #{unsolvable_box} is unsolvable"
       return nil
     end
+    unsolvable_row = @cells.find { |row| !solvable?(row) }
+    if unsolvable_row
+      @logger.debug "Row #{unsolvable_row.map &:possibilities} is unsolvable"
+      return nil
+    end
+    # Surprisingly, we don't also need to check for unsolvable columns,
+    # not even to solve a transposed version of the game that requires checking for unsolvable rows
     if solved?
       return self
     end
@@ -84,6 +94,10 @@ class Game
     end
   end
 
+  private def solvable?(row)
+    Array.product(row.map(&:possibilities)).any? { |combo| combo.sort == all_digits }
+  end
+
   private def solved?
     [@cells, @cells.transpose].all? do |rows|
       rows.all? { |row| row.map { |cell| cell.solution || 0 }.sort == all_digits }
@@ -94,24 +108,20 @@ class Game
     @all_digits ||= (1..size).to_a
   end
 
+  # One could imagine guessing boxes with the least combos first.
+  # Not doing that is fast enough, so doing that isn't worthwhile.
   private def guessed_solution
-    all_locations.
-      lazy.
-      flat_map { |x, y| @cells[y][x].unsolved_possibilities.map { |possibility| [x, y, possibility] } }.
-      map { |x, y, possibility| guess(x, y, possibility).solution }.
+    @boxes.lazy.with_index.
+      flat_map { |box, box_index| box.guesses.map { |box_guess| [box_index, box_guess] } }.
+      map { |box_index, box_guess| guess(box_index, box_guess).solution }.
       find &:itself
   end
 
-  private def all_locations
-    @all_locations ||= (0...size).to_a.product((0...size).to_a).map { |x, y| [y, x] }
-  end
-
-  private def guess(x, y, digit)
+  private def guess(box_index, box_guess)
     dup.tap do |copy|
-      boxes = @boxes.map &:copy
+      boxes = @boxes.map.with_index { |box, i| i == box_index ? box_guess : box.copy }
       copy.instance_variable_set '@boxes', boxes
       copy.initialize_cells
-      copy.instance_variable_get('@cells')[y][x].restrict_to [digit]
     end
   end
 

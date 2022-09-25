@@ -1,3 +1,4 @@
+require_relative '../array'
 require_relative '../cell'
 
 module Box
@@ -29,16 +30,29 @@ class Box::Base
 
   def solve
     combos = self.combos
-    solvable_combos =
-      combos.
-        select { |combo| satisfies_constraint? combo }.
-        reject { |combo| has_duplicate_in_row_or_column? combo }
+    solvable_combos = self.solvable combos
     if solvable_combos.length == combos.length
       return false
     end
     solvable_combos.transpose.each_with_index.inject(false) do |progressed, (possibilities, i)|
       progressed | cells.values[i].restrict_to(possibilities.uniq)
     end
+  end
+
+  def solvable?
+    solvable(combos).any?
+  end
+
+  def guesses
+    # If there were only one solvable combo we could return [] to avoid needless
+    # work and possibly avoid infinite recursion. So far this has not occurred.
+    solvable(combos).map { |combo| copy.tap { |copy| copy.restrict_to combo } }
+  end
+
+  private def solvable(combos)
+    combos.
+      select { |combo| satisfies_constraint? combo }.
+      reject { |combo| has_duplicate_in_row_or_column? combo }
   end
 
   private def has_duplicate_in_row_or_column?(combo)
@@ -49,27 +63,20 @@ class Box::Base
     end
   end
 
+  protected def restrict_to(combo)
+    combo.each_with_index do |possibility, cell_index|
+      cells.values[cell_index].restrict_to [possibility]
+    end
+  end
+
   def copy
     dup.tap do |copy|
       copy.instance_variable_set '@cells', cells.transform_values(&:copy)
     end
   end
 
-  def solvable?
-    combos.any? { |combo| satisfies_constraint? combo }
-  end
-
   private def combos
-    product cells.values.map(&:possibilities)
-  end
-
-  private def product(arrays)
-    if arrays.length == 1
-      arrays.first.map { |digit| [digit] }
-    else
-      first, *rest = arrays
-      first.product *rest
-    end
+    Array.product cells.values.map(&:possibilities)
   end
 
   def to_s

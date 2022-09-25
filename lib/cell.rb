@@ -19,10 +19,6 @@ class Cell
     end
   end
 
-  def unsolved_possibilities
-    possibilities.length == 1 ? [] : possibilities
-  end
-
   def copy
     dup.tap do |copy|
       copy.instance_variable_set '@possibilities', possibilities.dup
