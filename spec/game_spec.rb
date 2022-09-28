@@ -88,7 +88,7 @@ RSpec.describe Game do
     # +7 +7 +3   3 1 2
     # +3 +7 +3 → 2 3 1
     # +3 +5 +5   1 2 3
-    it "guesses, 3z3" do
+    it "eliminates partitions in rows and columns, 3z3" do
       boxes = [
         Box::Sum.new(3, 3, [[0, 0], [0, 1]]),
         Box::Sum.new(3, 5, [[1, 0], [2, 0]]),
@@ -105,7 +105,7 @@ RSpec.describe Game do
     #  x8 x10 x10  x5 +12 → 4 5 2 1 3
     #  x8  x3  x3  x5 +12   2 1 3 5 4
     #  +5  +5 x20 x20 x20   3 2 5 4 1
-    it "guesses, 5x5" do
+    it "eliminates partitions in rows and columns, 5x5" do
       boxes = [
         Box::Sum.new(5, 5, [[0, 0], [1, 0]]),
         Box::Product.new(5, 20, [[2, 0], [3, 0], [4, 0]]),

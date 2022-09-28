@@ -40,7 +40,7 @@ class Game
   end
 
   def solution
-    eliminate_possibilities
+    resolve_constraints
     @logger.debug { "\n#{self.to_s.chomp}" }
     unsolvable_box = @boxes.find { |box| !box.solvable? }
     if unsolvable_box
@@ -53,40 +53,35 @@ class Game
     guessed_solution
   end
 
-  private def eliminate_possibilities
+  private def resolve_constraints
     loop do
-      eliminated_something = eliminate_possibilities_with_boxes | eliminate_possibilities_with_cells
-      break if !eliminated_something
+      progressed = resolve_boxes | resolve_partitions
+      break if !progressed
     end
   end
 
-  private def eliminate_possibilities_with_boxes
+  private def resolve_boxes
     @boxes.inject(false) { |result, box| result | box.solve }
   end
 
-  private def eliminate_possibilities_with_cells
-    eliminated_something = false
-    (0...size).each do |solved_x|
-      (0...size).each do |solved_y|
-        solution = @cells[solved_y][solved_x].solution
-        if !solution
-          next
-        end
-        (0...size).each do |unsolved_x|
-          if unsolved_x == solved_x
-            next
+  private def resolve_partitions
+    _resolve_partitions(@cells) | _resolve_partitions(@cells.transpose)
+  end
+
+  private def _resolve_partitions(rows)
+    rows.inject(false) do |progressed_in_rows, row|
+      row.inject(progressed_in_rows) do |progressed_in_row, cell|
+        subsets, not_subsets = row.partition { |other_cell| (other_cell.possibilities - cell.possibilities).empty? }
+        if subsets.length == cell.possibilities.length
+          complement = all_digits - cell.possibilities
+          not_subsets.inject(progressed_in_row) do |progressed_in_cell, other_cell|
+            progressed_in_cell | other_cell.restrict_to(complement)
           end
-          eliminated_something |= @cells[solved_y][unsolved_x].eliminate(solution)
-        end
-        (0...size).each do |unsolved_y|
-          if unsolved_y == solved_y
-            next
-          end
-          eliminated_something |= @cells[unsolved_y][solved_x].eliminate(solution)
+        else
+          progressed_in_row
         end
       end
     end
-    eliminated_something
   end
 
   private def solved?
