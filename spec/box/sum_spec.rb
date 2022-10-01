@@ -10,37 +10,37 @@ RSpec.describe Box::Sum do
   describe '#solve' do
     it "solves a one-cell box" do
       box = box 2, 1, [[0, 0]]
-      eliminated_something = box.solve
-      expect(eliminated_something).to be_truthy
+      progressed = box.solve
+      expect(progressed).to be_truthy
       expect(box.cells[[0, 0]].solution).to eq(1)
     end
 
     it "solves a two-cell box" do
       box = box 2, 3, [[0, 0], [1, 0]]
       box.cells[[0, 0]].restrict_to [1]
-      eliminated_something = box.solve
-      expect(eliminated_something).to be_truthy
+      progressed = box.solve
+      expect(progressed).to be_truthy
       expect(box.cells[[1, 0]].solution).to eq(2)
     end
 
     it "eliminates duplicates in rows" do
       box = box 3, 4, [[0, 0], [0, 1]]
-      eliminated_something = box.solve
-      expect(eliminated_something).to be_truthy
+      progressed = box.solve
+      expect(progressed).to be_truthy
       expect(box.cells.values.map &:possibilities).to eq([[1, 3], [1, 3]])
     end
 
     it "eliminates duplicates in columns" do
       box = box 3, 4, [[0, 0], [1, 0]]
-      eliminated_something = box.solve
-      expect(eliminated_something).to be_truthy
+      progressed = box.solve
+      expect(progressed).to be_truthy
       expect(box.cells.values.map &:possibilities).to eq([[1, 3], [1, 3]])
     end
 
     it "returns false if no possibilities were eliminated" do
       box = box 1, 1, [[0, 0]]
-      eliminated_something = box.solve
-      expect(eliminated_something).to be_falsey
+      progressed = box.solve
+      expect(progressed).to be_falsey
       expect(box.cells[[0, 0]].solution).to eq(1)
     end
   end

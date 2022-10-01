@@ -10,15 +10,15 @@ RSpec.describe Box::Solution do
   describe '#solve' do
     it "solves an unsolved cell" do
       box = box 2, 1, [[0, 0]]
-      eliminated_something = box.solve
-      expect(eliminated_something).to be_truthy
+      progressed = box.solve
+      expect(progressed).to be_truthy
       expect(box.cells[[0, 0]].solution).to eq(1)
     end
 
     it "returns false if no possibilities were eliminated" do
       box = box 1, 1, [[0, 0]]
-      eliminated_something = box.solve
-      expect(eliminated_something).to be_falsey
+      progressed = box.solve
+      expect(progressed).to be_falsey
       expect(box.cells[[0, 0]].solution).to eq(1)
     end
   end
