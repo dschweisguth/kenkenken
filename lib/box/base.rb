@@ -28,7 +28,7 @@ class Box::Base
     end
   end
 
-  def solve
+  def resolve
     combos = self.combos
     solvable_combos = self.solvable combos
     if solvable_combos.length == combos.length

@@ -7,39 +7,39 @@ RSpec.describe Box::Sum do
     end
   end
 
-  describe '#solve' do
-    it "solves a one-cell box" do
+  describe '#resolve' do
+    it "resolves a one-cell box" do
       box = box 2, 1, [[0, 0]]
-      progressed = box.solve
+      progressed = box.resolve
       expect(progressed).to be_truthy
       expect(box.cells[[0, 0]].solution).to eq(1)
     end
 
-    it "solves a two-cell box" do
+    it "resolves a two-cell box" do
       box = box 2, 3, [[0, 0], [1, 0]]
       box.cells[[0, 0]].restrict_to [1]
-      progressed = box.solve
+      progressed = box.resolve
       expect(progressed).to be_truthy
       expect(box.cells[[1, 0]].solution).to eq(2)
     end
 
     it "eliminates duplicates in rows" do
       box = box 3, 4, [[0, 0], [0, 1]]
-      progressed = box.solve
+      progressed = box.resolve
       expect(progressed).to be_truthy
       expect(box.cells.values.map &:possibilities).to eq([[1, 3], [1, 3]])
     end
 
     it "eliminates duplicates in columns" do
       box = box 3, 4, [[0, 0], [1, 0]]
-      progressed = box.solve
+      progressed = box.resolve
       expect(progressed).to be_truthy
       expect(box.cells.values.map &:possibilities).to eq([[1, 3], [1, 3]])
     end
 
     it "returns false if no possibilities were eliminated" do
       box = box 1, 1, [[0, 0]]
-      progressed = box.solve
+      progressed = box.resolve
       expect(progressed).to be_falsey
       expect(box.cells[[0, 0]].solution).to eq(1)
     end

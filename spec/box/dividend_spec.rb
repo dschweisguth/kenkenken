@@ -7,19 +7,19 @@ RSpec.describe Box::Dividend do
     end
   end
 
-  describe '#solve' do
-    it "solves an unsolved cell > solved cell" do
+  describe '#resolve' do
+    it "resolves an unsolved cell > solved cell" do
       box = box 2, 2, [[0, 0], [1, 0]]
       box.cells[[0, 0]].restrict_to [1]
-      progressed = box.solve
+      progressed = box.resolve
       expect(progressed).to be_truthy
       expect(box.cells[[1, 0]].solution).to eq(2)
     end
 
-    it "solves an unsolved cell > solved cell" do
+    it "resolves an unsolved cell > solved cell" do
       box = box 2, 2, [[0, 0], [1, 0]]
       box.cells[[0, 0]].restrict_to [2]
-      progressed = box.solve
+      progressed = box.resolve
       expect(progressed).to be_truthy
       expect(box.cells[[1, 0]].solution).to eq(1)
     end
@@ -28,7 +28,7 @@ RSpec.describe Box::Dividend do
       box = box 2, 2, [[0, 0], [1, 0]]
       box.cells[[0, 0]].restrict_to [1]
       box.cells[[1, 0]].restrict_to [2]
-      progressed = box.solve
+      progressed = box.resolve
       expect(progressed).to be_falsey
       expect(box.cells[[1, 0]].solution).to eq(2)
     end

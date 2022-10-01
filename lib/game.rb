@@ -72,7 +72,7 @@ class Game
   end
 
   private def resolve_boxes
-    @boxes.inject(false) { |result, box| result | box.solve }
+    @boxes.inject(false) { |result, box| result | box.resolve }
   end
 
   private def resolve_partitions
