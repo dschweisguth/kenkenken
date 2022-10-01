@@ -44,9 +44,12 @@ class Box::Base
   end
 
   def guesses
-    # If there were only one solvable combo we could return [] to avoid needless
-    # work and possibly avoid infinite recursion. So far this has not occurred.
-    solvable(combos).map { |combo| copy.tap { |copy| copy.restrict_to combo } }
+    solvable_combos = solvable(combos)
+    if solvable_combos.length == 1
+      []
+    else
+      solvable_combos.map { |combo| copy.tap { |copy| copy.restrict_to combo } }
+    end
   end
 
   private def solvable(combos)
