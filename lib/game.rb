@@ -53,14 +53,7 @@ class Game
     # repeatedly resolving boxes and then partitions.
     loop { resolve_partitions && resolve_boxes || break }
     @logger.debug { "\n#{self.to_s.chomp}" }
-    unsolvable_box = @boxes.find { |box| !box.solvable? }
-    if unsolvable_box
-      @logger.debug "Box #{unsolvable_box} is unsolvable"
-      return nil
-    end
-    unsolvable_row = @cells.find { |row| !solvable?(row) }
-    if unsolvable_row
-      @logger.debug "Row #{unsolvable_row.map &:possibilities} is unsolvable"
+    if a_box_is_unsolvable || a_row_is_unsolvable
       return nil
     end
     # Surprisingly, we don't also need to check for unsolvable columns,
@@ -97,6 +90,22 @@ class Game
 
   private def solvable?(row)
     Array.product(row.map(&:possibilities)).any? { |combo| combo.sort == all_digits }
+  end
+
+  def a_box_is_unsolvable
+    @boxes.find { |box| !box.solvable? }.tap do |unsolvable_box|
+      if unsolvable_box
+        @logger.debug "Box #{unsolvable_box} is unsolvable"
+      end
+    end
+  end
+
+  def a_row_is_unsolvable
+    @cells.find { |row| !solvable?(row) }.tap do |unsolvable_row|
+      if unsolvable_row
+        @logger.debug "Row #{unsolvable_row.map &:possibilities} is unsolvable"
+      end
+    end
   end
 
   private def solved?
@@ -138,8 +147,8 @@ class Game
     @cells.
       reverse.
       map do |row|
-        "#{row.map { |cell| cell.possibilities.inspect }.join ' '}\n"
-      end.
+      "#{row.map { |cell| cell.possibilities.inspect }.join ' '}\n"
+    end.
       join
   end
 end
