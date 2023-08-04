@@ -33,6 +33,8 @@ RSpec.describe Game do
     end
 
     it "eliminates duplicates in rows and columns within a box" do
+      # Note that this game does not require elimination of the solved cell's digit from cells in the same row and column.
+      # It only requires the sum box to have unique digits in each row and column.
       boxes = [
         Box::Solution.new(2, 1, [[0, 0]]),
         Box::Sum.new(2, 5, [[1, 0], [0, 1], [1, 1]])
@@ -44,8 +46,12 @@ RSpec.describe Game do
       # Without row & column elimination or guessing, this game could not be solved.
       # Without row & column elimination, we'd guess 1 at [0, 0] and have to work through
       # many subsidiary guesses before guessing 3 at [0, 0].
-      # With row & column elimination, we solve the game in two rounds of elimination,
-      # without guessing.
+      # With row & column elimination (that is, elimination of a solved cell's digit from other cells
+      # in its row and column), we solve the game in two rounds of elimination, without guessing.
+      #
+      # Note that row & column elimination is just the one-cell case of partition elimination.
+      # Examples below require the general case of partition elimination.
+      #
       # This game also requires repeated elimination. Boxes don't affect other boxes,
       # so one iteration through boxes is always enough; only a game that requires row &
       # column elimination can also require repeated elimination.
@@ -128,7 +134,8 @@ RSpec.describe Game do
       expect_solution boxes, expected_solution
     end
 
-    # Solving this game quickly requires guessing box combos rather than cells
+    # Solving this game requires guessing.
+    # Solving it quickly requires guessing box combos rather than single cells.
     it "solves the large puzzle" do
       boxes = [
         Box::Sum.new(7, 14, [[0, 0], [1, 0], [2, 0], [3, 0]]),
