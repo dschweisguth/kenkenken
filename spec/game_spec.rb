@@ -88,7 +88,7 @@ RSpec.describe Game do
     # +7 +7 +3   3 1 2
     # +3 +7 +3 → 2 3 1
     # +3 +5 +5   1 2 3
-    it "eliminates partitions in rows and columns, 3z3" do
+    it "eliminates partitions in rows and columns, 3x3" do
       boxes = [
         Box::Sum.new(3, 3, [[0, 0], [0, 1]]),
         Box::Sum.new(3, 5, [[1, 0], [2, 0]]),
